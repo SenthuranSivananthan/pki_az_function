@@ -82,3 +82,7 @@ File name:  test.txt.json
   "FileName": "test.txt"
 }
 ```
+
+## Reference
+
+* [https://docs.microsoft.com/en-us/azure/storage/common/storage-client-side-encryption?tabs=dotnet](https://docs.microsoft.com/en-us/azure/storage/common/storage-client-side-encryption?tabs=dotnet)
