@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
@@ -33,11 +32,7 @@ namespace Company.Function
 
             // Use random key to decrypt data
             var decryptedData = Crypto.Decrypt(decryptedRandomKey.Plaintext, Convert.FromBase64String(envelope.Data));
-            var decryptedBase64Data = Convert.FromBase64String(decryptedData);
-            var decryptedOriginalData = Encoding.UTF8.GetString(decryptedBase64Data, 0, decryptedBase64Data.Length);
-
-            var decryptedOriginalDataBytes = Encoding.UTF8.GetBytes(decryptedOriginalData);
-            outputBlob.Write(decryptedOriginalDataBytes, 0, decryptedOriginalDataBytes.Length);
+            outputBlob.Write(decryptedData, 0, decryptedData.Length);
 
             log.LogInformation($"Decryption complete for {name}.json");
         }

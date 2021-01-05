@@ -39,13 +39,8 @@ namespace Company.Function
             // save random key as base64 encoded string
             envelope.Key = Convert.ToBase64String(randomKeyEncrypted);
 
-            // encode data to base64
-            var data = new byte[inputBlob.Length];
-            inputBlob.Read(data, 0, (int)inputBlob.Length);
-            var dataAsBase64 = Convert.ToBase64String(data);
-
             // encrypt data using random key (symmetric key)
-            envelope.Data = Crypto.Encrypt(randomKey, dataAsBase64);
+            envelope.Data = Convert.ToBase64String(Crypto.Encrypt(randomKey, inputBlob));
 
             // save to output
             var serializedOutput = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(envelope));

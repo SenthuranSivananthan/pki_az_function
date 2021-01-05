@@ -5,8 +5,7 @@ using System.Security.Cryptography;
 namespace Company.Function
 {
     public static class Crypto
-    {
-        
+    {        
         public static byte[] RandomKey(int length)
         {
             var rng = RandomNumberGenerator.Create();
@@ -15,17 +14,16 @@ namespace Company.Function
 
             return key;
         }
-        
-        // credit: https://www.c-sharpcorner.com/article/encryption-and-decryption-using-a-symmetric-key-in-c-sharp/
-        public static string Encrypt(byte[] key, string plainText)  
+
+        public static byte[] Encrypt(byte[] key, Stream data)  
         {  
             byte[] iv = new byte[16];  
-            byte[] array;  
 
             using (Aes aes = Aes.Create())  
             {  
                 aes.Key = key;
-                aes.IV = iv;  
+                aes.IV = iv; 
+                aes.Padding = PaddingMode.Zeros; 
 
                 ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);  
 
@@ -33,21 +31,17 @@ namespace Company.Function
                 {  
                     using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, encryptor, CryptoStreamMode.Write))  
                     {  
-                        using (StreamWriter streamWriter = new StreamWriter((Stream)cryptoStream))  
-                        {  
-                            streamWriter.Write(plainText);  
-                        }  
+                        data.CopyTo(cryptoStream);
 
-                        array = memoryStream.ToArray();  
+                        memoryStream.Flush();
+                        memoryStream.Position = 0;                        
+                        return memoryStream.ToArray();  
                     }  
                 }  
-            }  
-
-            return Convert.ToBase64String(array);  
+            }
         }
 
-        // credit: https://www.c-sharpcorner.com/article/encryption-and-decryption-using-a-symmetric-key-in-c-sharp/
-        public static string Decrypt(byte[] key, byte[] cipherText)  
+        public static byte[] Decrypt(byte[] key, byte[] cipherText)  
         {  
             byte[] iv = new byte[16];  
             byte[] buffer = cipherText;
@@ -56,17 +50,19 @@ namespace Company.Function
             {  
                 aes.Key = key;
                 aes.IV = iv;  
+                aes.Padding = PaddingMode.Zeros;
+
                 ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);  
   
                 using (MemoryStream memoryStream = new MemoryStream(buffer))  
                 {  
                     using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))  
                     {  
-                        using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))  
-                        {  
-                            return streamReader.ReadToEnd();  
-                        }  
-                    }  
+                        var decrypted = new MemoryStream();
+                        cryptoStream.CopyTo(decrypted);
+
+                        return decrypted.ToArray();
+                    }
                 }  
             }  
         }
