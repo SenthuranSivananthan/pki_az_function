@@ -85,4 +85,4 @@ File name:  test.txt.json
 
 ## Reference
 
-* [https://docs.microsoft.com/en-us/azure/storage/common/storage-client-side-encryption?tabs=dotnet](https://docs.microsoft.com/en-us/azure/storage/common/storage-client-side-encryption?tabs=dotnet)
+* [Encryption and decryption via the envelope technique](https://docs.microsoft.com/en-us/azure/storage/common/storage-client-side-encryption?tabs=dotnet)
