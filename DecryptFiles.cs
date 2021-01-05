@@ -1,13 +1,11 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
-using Azure.Security.KeyVault.Secrets;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -68,45 +66,6 @@ namespace Company.Function
             outputBlob.Write(decryptedOriginalDataBytes, 0, decryptedOriginalDataBytes.Length);
 
             log.LogInformation($"Decryption complete for {name}.json");
-        }
-
-        public static byte[] RandomKey(int length)
-        {
-            var rng = RandomNumberGenerator.Create();
-            byte[] key = new byte[length];
-            rng.GetBytes(key);
-
-            return key;
-        }
-
-        // credit: https://www.c-sharpcorner.com/article/encryption-and-decryption-using-a-symmetric-key-in-c-sharp/
-        public static string EncryptString(byte[] key, string plainText)  
-        {  
-            byte[] iv = new byte[16];  
-            byte[] array;  
-
-            using (Aes aes = Aes.Create())  
-            {  
-                aes.Key = key;
-                aes.IV = iv;  
-
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);  
-
-                using (MemoryStream memoryStream = new MemoryStream())  
-                {  
-                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, encryptor, CryptoStreamMode.Write))  
-                    {  
-                        using (StreamWriter streamWriter = new StreamWriter((Stream)cryptoStream))  
-                        {  
-                            streamWriter.Write(plainText);  
-                        }  
-
-                        array = memoryStream.ToArray();  
-                    }  
-                }  
-            }  
-
-            return Convert.ToBase64String(array);  
         }
     }
 }
