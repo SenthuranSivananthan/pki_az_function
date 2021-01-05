@@ -28,7 +28,7 @@ namespace Company.Function
             var credentials = new AzureCliCredential();
 
             // generate random key
-            var randomKey = RandomKey(32);
+            var randomKey = Crypto.RandomKey(32);
 
             // encrypt random key with public key (asymmetric key)
             var secretClient = new SecretClient(new Uri("https://sesivanpki.vault.azure.net"), credentials);
@@ -45,52 +45,13 @@ namespace Company.Function
             var dataAsBase64 = Convert.ToBase64String(data);
 
             // encrypt data using random key (symmetric key)
-            envelope.Data = EncryptString(randomKey, dataAsBase64);
+            envelope.Data = Crypto.Encrypt(randomKey, dataAsBase64);
 
             // save to output
             var serializedOutput = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(envelope));
             outputBlob.Write(serializedOutput, 0, serializedOutput.Length);
 
             log.LogInformation($"Encryption complete for {name}");
-        }
-
-        public static byte[] RandomKey(int length)
-        {
-            var rng = RandomNumberGenerator.Create();
-            byte[] key = new byte[length];
-            rng.GetBytes(key);
-
-            return key;
-        }
-
-        // credit: https://www.c-sharpcorner.com/article/encryption-and-decryption-using-a-symmetric-key-in-c-sharp/
-        public static string EncryptString(byte[] key, string plainText)  
-        {  
-            byte[] iv = new byte[16];  
-            byte[] array;  
-
-            using (Aes aes = Aes.Create())  
-            {  
-                aes.Key = key;
-                aes.IV = iv;  
-
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);  
-
-                using (MemoryStream memoryStream = new MemoryStream())  
-                {  
-                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, encryptor, CryptoStreamMode.Write))  
-                    {  
-                        using (StreamWriter streamWriter = new StreamWriter((Stream)cryptoStream))  
-                        {  
-                            streamWriter.Write(plainText);  
-                        }  
-
-                        array = memoryStream.ToArray();  
-                    }  
-                }  
-            }  
-
-            return Convert.ToBase64String(array);  
         }
     }
 }
