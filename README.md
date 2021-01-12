@@ -1,6 +1,6 @@
 # PKI with Azure Storage Blobs & Azure Key Vault
 
-> This is a prototype to help understand how PKI based encryption.  **The source code is not to be used in production.**
+> This is a prototype to help understand how PKI based encryption.  **The source code is not to be used in production and shared under MIT license.**
 
 ## Approach
 
