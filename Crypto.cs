@@ -32,6 +32,7 @@ namespace Company.Function
                     using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, encryptor, CryptoStreamMode.Write))  
                     {  
                         data.CopyTo(cryptoStream);
+                        cryptoStream.FlushFinalBlock();
 
                         memoryStream.Flush();
                         memoryStream.Position = 0;                        
