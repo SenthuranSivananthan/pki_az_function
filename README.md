@@ -1,5 +1,7 @@
 # PKI with Azure Storage Blobs & Azure Key Vault
 
+> This is a prototype to help understand how PKI based encryption.  **The source code is not to be used in production and shared under MIT license.**
+
 ## Approach
 
 **Encryption**
@@ -82,3 +84,7 @@ File name:  test.txt.json
   "FileName": "test.txt"
 }
 ```
+
+## Reference
+
+* [Encryption and decryption via the envelope technique](https://docs.microsoft.com/en-us/azure/storage/common/storage-client-side-encryption?tabs=dotnet)
